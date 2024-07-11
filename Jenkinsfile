@@ -1,36 +1,48 @@
 pipeline {
     agent any
+
     environment {
+        // Define Maven and SonarQube related variables
         mvnHome = tool name: 'Maven', type: 'maven'
-        // Replace with your Nexus repository URL
-       // nexusUrl = 'https://your-nexus-repo-url'
-        // Replace with your SonarQube server URL
-        sonarServerUrl = 'https://sonarqube.colanapps.in/projects'
-        // Replace with your SonarQube project key and name
-        sonarProjectKey = 'test-pipeline'
-        sonarProjectName = 'test-pipeline'
+        sonarProjectKey = 'Test-pipeline'
+        sonarServerUrl = 'https://sonarqube.colanapps.in/' // Replace with your SonarQube server URL
     }
+
     stages {
-  stage('Checkout') {
-    checkout scm
-  }
-        stage('Build') {
+        stage('Build and SonarQube Analysis') {
             steps {
-                sh "${mvnHome}/bin/mvn clean install"
+                // Trigger the build job using HTTP POST request
+                script {
+                    def jobUrl = 'https://jennode.colanapps.in/job/Pipelinetest/build'
+                    def jobToken = 'pipeline-test'
+                    
+                    def response = httpRequest(
+                        contentType: 'APPLICATION_FORM',
+                        httpMode: 'POST',
+                        requestBody: "",
+                        url: "${jobUrl}?token=${jobToken}"
+                    )
+                    
+                    echo "Triggered build with response status: ${response.status}"
+                }
+                
+                // Wait for the build to complete (optional)
+                sleep time: 10, unit: 'SECONDS'
+                
+                // Run Maven build and SonarQube analysis
+                withSonarQubeEnv('SonarQube') {
+                    sh "${mvnHome}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=${sonarProjectKey} -Dsonar.host.url=${sonarServerUrl}"
+                }
             }
         }
-  stage('SonarQube Analysis') {
-    withSonarQubeEnv('sonar_server') {
-      sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=test-pipeline -Dsonar.projectName='test-pipeline'"
     }
-  }
-}
-     post {
+
+    post {
         success {
-            echo 'Build succeeded!'
+            echo 'Pipeline completed successfully!'
         }
         failure {
-            echo 'Build failed :('
+            echo 'Pipeline failed :('
         }
     }
 }
