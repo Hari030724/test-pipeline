@@ -2,31 +2,59 @@ pipeline {
     agent any
 
     environment {
-        // Define Maven and SonarQube related variables
-        mvnHome = tool name: 'Maven', type: 'maven'
-        sonarProjectKey = 'Test-pipeline'
-        sonarServerUrl = 'https://sonarqube.colanapps.in/'
+        MAVEN_HOME = tool name: 'Maven', type: 'maven'
+        SONARQUBE_SCANNER_HOME = tool name: 'SonarQubeScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+        SONARQUBE_API_TOKEN = credentials('sqa_2de1ed443d10f46e6507693733fc93a39648a212') 
+        SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in' 
+        SONARQUBE_PROJECT_KEY = 'Test-pipeline' 
     }
 
     stages {
-        stage('Build and SonarQube Analysis') {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/gurunathantest/sonar-quality-gate-maven-plugin'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                sh "${MAVEN_HOME}/bin/mvn clean install"
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                sh "${MAVEN_HOME}/bin/mvn test"
+            }
+        }
+        
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube Server') {
+                    sh "${SONARQUBE_SCANNER_HOME}/bin/sonar-scanner"
+                }
+            }
+        }
+        
+        stage('Check Quality Gate') {
             steps {
                 script {
-                    def jobUrl = 'https://jennode.colanapps.in/job/Pipelinetest/build'
-                    def jobToken = '11095bae9ca24926e6af9c6080ce74f226'
-                    
+                    def qualityGateUrl = "${SONARQUBE_SERVER_URL}/api/qualitygates/project_status"
                     def response = httpRequest(
-                        contentType: 'APPLICATION_FORM',
-                        httpMode: 'POST',
-                        requestBody: "",
-                        url: "${jobUrl}?token=${jobToken}"
+                        acceptType: 'APPLICATION_JSON',
+                        contentType: 'APPLICATION_JSON',
+                        customHeaders: [[name: 'Authorization', value: "Bearer ${SONARQUBE_API_TOKEN}"]],
+                        url: "${qualityGateUrl}?projectKey=${test-pipeline}"
                     )
                     
-                    echo "Triggered build with response status: ${response.status}"
-                }
-                
-                withSonarQubeEnv('SonarQube') {
-                    sh "${mvnHome}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=${sonarProjectKey} -Dsonar.host.url=${sonarServerUrl}"
+                    def json = readJSON text: response.content
+                    def status = json.projectStatus.status
+                    
+                    if (status == 'OK') {
+                        echo "Quality gate passed: ${json.projectStatus.status}"
+                    } else {
+                        error "Quality gate failed: ${json.projectStatus.status}"
+                    }
                 }
             }
         }
@@ -34,10 +62,12 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'Pipeline successful!'
+            // Additional actions upon success
         }
         failure {
-            echo 'Pipeline failed :('
+            echo 'Pipeline failed!'
+            // Additional actions upon failure
         }
     }
 }
