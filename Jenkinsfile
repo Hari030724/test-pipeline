@@ -8,21 +8,19 @@ pipeline {
         SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in' 
         SONARQUBE_PROJECT_KEY = 'Test-pipeline' 
     }
-    tools {
-          git 'Default'
-            }
-
     stages {
+        stage('SCM') {
+    git 'https://github.com/gurunathantest/sonar-quality-gate-maven-plugin.git'
+  }
         stage('Checkout') {
            steps {
                 git branch: 'master', url: 'https://github.com/gurunathantest/sonar-quality-gate-maven-plugin.git'
             } 
         }
         stage('Build') {
-            steps {
-                withSonarQubeEnv(installationName:'test-pipeline')
-                sh "./mvnw clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar"
-            }
+            
+               
+            
         }
         
         stage('Test') {
@@ -33,8 +31,8 @@ pipeline {
         
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube Server') {
-                    sh "${SONARQUBE_SCANNER_HOME}/bin/sonar-scanner"
+                withSonarQubeEnv(credentialsId: 'sqa_2de1ed443d10f46e6507693733fc93a39648a212', installationName: 'test-pipeline') {
+      sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
                 }
             }
         }
