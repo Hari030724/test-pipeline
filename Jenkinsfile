@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Define Maven and SonarQube related variables
-        mvnHome = tool name: 'Maven', type: 'maven'
+        mvnHome = tool name: 'maven', type: 'maven'
         sonarProjectKey = 'Test-pipeline'
         sonarServerUrl = 'https://sonarqube.colanapps.in/' // Replace with your SonarQube server URL
     }
