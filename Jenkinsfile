@@ -3,18 +3,17 @@ pipeline {
 
     environment {
         // Define Maven and SonarQube related variables
-        mvnHome = tool name: 'maven', type: 'maven'
+        mvnHome = tool name: 'Maven', type: 'maven'
         sonarProjectKey = 'Test-pipeline'
-        sonarServerUrl = 'https://sonarqube.colanapps.in/' // Replace with your SonarQube server URL
+        sonarServerUrl = 'https://sonarqube.colanapps.in/'
     }
 
     stages {
         stage('Build and SonarQube Analysis') {
             steps {
-                // Trigger the build job using HTTP POST request
                 script {
                     def jobUrl = 'https://jennode.colanapps.in/job/Pipelinetest/build'
-                    def jobToken = 'pipeline-test'
+                    def jobToken = '11095bae9ca24926e6af9c6080ce74f226'
                     
                     def response = httpRequest(
                         contentType: 'APPLICATION_FORM',
@@ -26,10 +25,6 @@ pipeline {
                     echo "Triggered build with response status: ${response.status}"
                 }
                 
-                // Wait for the build to complete (optional)
-                sleep time: 10, unit: 'SECONDS'
-                
-                // Run Maven build and SonarQube analysis
                 withSonarQubeEnv('SonarQube') {
                     sh "${mvnHome}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=${sonarProjectKey} -Dsonar.host.url=${sonarServerUrl}"
                 }
