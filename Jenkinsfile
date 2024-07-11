@@ -8,14 +8,16 @@ pipeline {
         SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in' 
         SONARQUBE_PROJECT_KEY = 'Test-pipeline' 
     }
+    tools {
+          git 'Default'
+            }
 
     stages {
         stage('Checkout') {
-            steps {
-                git 'https://github.com/gurunathantest/sonar-quality-gate-maven-plugin'
-            }
+           steps {
+                git branch: 'master', url: 'https://github.com/gurunathantest/sonar-quality-gate-maven-plugin.git'
+            } 
         }
-        
         stage('Build') {
             steps {
                 sh "${MAVEN_HOME}/bin/mvn clean install"
