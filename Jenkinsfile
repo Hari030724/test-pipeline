@@ -12,7 +12,7 @@ pipeline {
       
         stage('Checkout') {
            steps {
-                git branch:'master',credentialsId: 'CIPL1588',url: 'https://github.com/gurunathantest/sonar-quality-gate-maven-plugin.git'
+                git branch:'master',credentialsId: 'gurunathan@ggexcel.ai',url: 'https://github.com/gurunathantest/sonar-quality-gate-maven-plugin.git'
             } 
         }
         stage('Build') {
