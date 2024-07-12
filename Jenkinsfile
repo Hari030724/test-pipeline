@@ -3,9 +3,9 @@ pipeline {
 
     environment {
         MAVEN_HOME = tool name: 'Maven', type: 'maven'
-        SONARQUBE_SCANNER_HOME = tool name: 'SonarQubeScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-        SONARQUBE_API_TOKEN = credentials('sqa_2de1ed443d10f46e6507693733fc93a39648a212') 
-        SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in' 
+        SONARQUBE_SCANNER_HOME = tool name: 'colan-sonarqube-server', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+        SONARQUBE_API_TOKEN = credentials('colan-sonaqube-server-global-access-token(https://sonarqube.colanapps.in/)') 
+        SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in/' 
         SONARQUBE_PROJECT_KEY = 'Test-pipeline-Sonar' 
     }
     stages {
@@ -25,8 +25,8 @@ pipeline {
         stage('Build & SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SONARQUBE_SCANNER_HOME') {
-                    sh 'mvn clean package sonar:sonar'
-      //sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
+                  //  sh 'mvn clean package sonar:sonar'
+      sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
                 }
             }
         }
