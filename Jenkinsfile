@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        MAVEN_HOME = tool name: 'Maven 4.0.0', type: 'maven'
+        MAVEN_HOME = tool name: 'Maven 3.9.8', type: 'maven'
         SONARQUBE_SCANNER_HOME = tool name: 'colan-sonarqube-server', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
         SONARQUBE_TOKEN = credentials('colan-sonaqube-server-global-access-token') 
         SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in/' 
@@ -26,7 +26,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('SONARQUBE_SCANNER_HOME') {
                   //  sh 'mvn clean package sonar:sonar'
-      sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:4.0.0:sonar'
+      sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
                 }
             }
         }
