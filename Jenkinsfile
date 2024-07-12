@@ -6,7 +6,7 @@ pipeline {
         SONARQUBE_SCANNER_HOME = tool name: 'SonarQubeScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
         SONARQUBE_API_TOKEN = credentials('sqa_2de1ed443d10f46e6507693733fc93a39648a212') 
         SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in' 
-        SONARQUBE_PROJECT_KEY = 'Test-pipeline' 
+        SONARQUBE_PROJECT_KEY = 'Test-pipeline-Sonar' 
     }
     stages {
         stage('SCM') {
@@ -45,7 +45,7 @@ pipeline {
                         acceptType: 'APPLICATION_JSON',
                         contentType: 'APPLICATION_JSON',
                         customHeaders: [[name: 'Authorization', value: "Bearer ${SONARQUBE_API_TOKEN}"]],
-                        url: "${qualityGateUrl}?projectKey=${test-pipeline}"
+                        url: "${qualityGateUrl}?projectKey=${SONARQUBE_PROJECT_KEY}"
                     )
                     
                     def json = readJSON text: response.content
