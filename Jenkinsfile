@@ -9,7 +9,7 @@ pipeline {
         SONARQUBE_PROJECT_KEY = 'Test-pipeline' 
     }
     stages {
-        stage('SCM') {
+        stage('git SCM') {
     git 'https://github.com/gurunathantest/sonar-quality-gate-maven-plugin.git'
   }
         stage('Checkout') {
