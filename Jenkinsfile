@@ -15,6 +15,8 @@ pipeline {
         //         git branch:'master',credentialsId: 'test-pipeline-git',url: 'https://github.com/gurunathantest/sonar-quality-gate-maven-plugin.git'
         //     } 
         // }
+
+        
         stage('Build') {
             steps {
                 sh "${MAVEN_HOME}/bin/mvn clean install"
