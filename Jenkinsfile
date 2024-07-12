@@ -4,9 +4,9 @@ pipeline {
     environment {
         MAVEN_HOME = tool name: 'Maven', type: 'maven'
         SONARQUBE_SCANNER_HOME = tool name: 'colan-sonarqube-server', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-        SONARQUBE_TOKEN = credentials('colan-sonaqube-server-global-access-token(https://sonarqube.colanapps.in/)') 
+        SONARQUBE_TOKEN = credentials('colan-sonaqube-server-global-access-token') 
         SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in/' 
-        SONARQUBE_PROJECT_KEY = 'Test-pipeline-Sonar' 
+        SONARQUBE_PROJECT_KEY = 'colan-sonaqube-server-global-access-token' 
     }
     stages {
            
