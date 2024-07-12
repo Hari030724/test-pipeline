@@ -6,7 +6,7 @@ pipeline {
         SONARQUBE_SCANNER_HOME = tool name: 'SonarQubeScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
         SONARQUBE_API_TOKEN = credentials('sqa_2de1ed443d10f46e6507693733fc93a39648a212') 
         SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in' 
-        SONARQUBE_PROJECT_KEY = 'Test-pipeline-Sonar' 
+        SONARQUBE_PROJECT_KEY = 'Test-pipeline' 
     }
     stages {
         stage('SCM') {
