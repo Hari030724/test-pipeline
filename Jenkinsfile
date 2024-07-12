@@ -6,17 +6,10 @@ pipeline {
         SONARQUBE_SCANNER_HOME = tool name: 'SonarQubeScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
         SONARQUBE_API_TOKEN = credentials('sqa_2de1ed443d10f46e6507693733fc93a39648a212') 
         SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in' 
-        SONARQUBE_PROJECT_KEY = 'Test-pipeline' 
+        SONARQUBE_PROJECT_KEY = 'Test-pipeline-Sonar' 
     }
     stages {
-      
-        // stage('Checkout') {
-        //    steps {
-        //         git branch:'master',credentialsId: 'test-pipeline-git',url: 'https://github.com/gurunathantest/sonar-quality-gate-maven-plugin.git'
-        //     } 
-        // }
-
-        
+           
         stage('Build') {
             steps {
                 sh "${MAVEN_HOME}/bin/mvn clean install"
@@ -29,18 +22,20 @@ pipeline {
             }
         }
         
-        stage('SonarQube Analysis') {
+        stage('Build & SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SONARQUBE_SCANNER_HOME') {
-      sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
+                    sh 'mvn clean package sonar:sonar'
+      //sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
                 }
             }
         }
         
-        /*stage('Check Quality Gate') {
+        stage('Check Quality Gate') {
             steps {
                 script {
                     def qualityGateUrl = "${SONARQUBE_SERVER_URL}/api/qualitygates/project_status"
+                    
                     def response = httpRequest(
                         acceptType: 'APPLICATION_JSON',
                         contentType: 'APPLICATION_JSON',
@@ -58,17 +53,15 @@ pipeline {
                     }
                 }
             }
-        }*/
+        }
     }
 
     post {
         success {
             echo 'Pipeline successful!'
-            // Additional actions upon success
         }
         failure {
             echo 'Pipeline failed!'
-            // Additional actions upon failure
         }
     }
 }
