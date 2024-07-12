@@ -4,7 +4,7 @@ pipeline {
     environment {
         MAVEN_HOME = tool name: 'Maven', type: 'maven'
         SONARQUBE_SCANNER_HOME = tool name: 'colan-sonarqube-server', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-        SONARQUBE_API_TOKEN = credentials('colan-sonaqube-server-global-access-token(https://sonarqube.colanapps.in/)') 
+        SONARQUBE_TOKEN = credentials('colan-sonaqube-server-global-access-token(https://sonarqube.colanapps.in/)') 
         SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in/' 
         SONARQUBE_PROJECT_KEY = 'Test-pipeline-Sonar' 
     }
@@ -34,15 +34,14 @@ pipeline {
         stage('Check Quality Gate') {
             steps {
                 script {
-                    def qualityGateUrl = "${SONARQUBE_SERVER_URL}/api/qualitygates/project_status"
+                    def qualityGateUrl = "${SONARQUBE_SERVER_URL} api/qualitygates/project_status"
                     
                     def response = httpRequest(
                         acceptType: 'APPLICATION_JSON',
                         contentType: 'APPLICATION_JSON',
-                        customHeaders: [[name: 'Authorization', value: "Bearer ${SONARQUBE_API_TOKEN}"]],
-                        url: "${qualityGateUrl}?projectKey=${SONARQUBE_PROJECT_KEY}"
-                    )
-                    
+                        customHeaders: [[name: 'Authorization', value: "Bearer ${SONARQUBE_TOKEN}"]],
+                        url: "${qualityGateUrl}?projectKey=${SONARQUBE_PROJECT_KEY}")
+        
                     def json = readJSON text: response.content
                     def status = json.projectStatus.status
                     
