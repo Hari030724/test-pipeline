@@ -21,8 +21,8 @@ stages {
       SCANNER_HOME = tool 'Sonar-scanner'
     }
     steps {
-    withSonarQubeEnv(credentialsId: 'sonar-credentialsId', installationName: 'Sonar') {
-         sh '''$SCANNER_HOME/bin/sonar-scanner \
+    withSonarQubeEnv(credentialsId: 'colan-sonaqube-server-global-access-token', installationName: 'colan-sonarqube-server') {
+         sh '''https://sonarqube.colanapps.in/bin/sonar-scanner \
          -Dsonar.projectKey=projectKey \
          -Dsonar.projectName=projectName \
          -Dsonar.sources=src/ \
