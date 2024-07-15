@@ -6,14 +6,14 @@ environment {
      returnStdout: true
     )
 }
-tools {
+/*tools {
    maven 'maven'
    jdk 'java'
-}
+}*/
 stages {
   stage('Build project') {
     steps {
-      sh '''mvn install'''
+      sh 'mvn clean package sonar:sonar'
     }
   }
   stage('SonarQube analysis') {
