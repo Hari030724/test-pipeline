@@ -12,17 +12,15 @@ pipeline {
           stage("Quality Gate") {
             steps {
             timeout(time: 1, unit: 'MINUTES') {
-             waitForQualityGate   
-                    {echo 'Build succeeded!'}
+                 steps {
+                withSonarQubeEnv('colan-sonarqube-server') {
+                    sh "https://sonarqube.colanapps.in/bin/mvn sonar:sonar -Dsonar.projectKey=${test-pipeline} -Dsonar.projectName='${test-pipeline}' -Dsonar.host.url=${https://sonarqube.colanapps.in}"
+                }
               }
             }
           }
-      stage('Deploy') {
-            steps {
-                sh 'kubectl apply -f deployment.yaml'
-            }
-        }        
+     
         }
- 
+        }
       }
 
