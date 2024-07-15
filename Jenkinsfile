@@ -16,7 +16,7 @@ pipeline {
                         acceptType: 'APPLICATION_JSON',
                         contentType: 'APPLICATION_JSON',
                         customHeaders: [[name: 'Authorization', value: "Bearer ${colan-sonaqube-server-global-access-token}"]],
-                        url: "${qualityGateUrl}?projectKey=${colan-sonarqube-server}")
+                        url: "${qualityGateUrl}?projectKey=${sqa_2de1ed443d10f46e6507693733fc93a39648a212}")
         
                     def json = readJSON text: response.content
                     def status = json.projectStatus.status
