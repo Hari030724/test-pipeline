@@ -6,10 +6,7 @@ environment {
      returnStdout: true
     )
 }
-/*tools {
-   maven 'maven'
-   jdk 'java'
-}*/
+   
 stages {
   stage('Build project') {
     steps {
@@ -37,20 +34,18 @@ stages {
             steps {
                 script {
                     def qualityGateUrl = "https://sonarqube.colanapps.in/api/qualitygates/project_status"
-                    
                     def response = httpRequest(
         acceptType: 'APPLICATION_JSON',
         contentType: 'APPLICATION_JSON',
         customHeaders: [[name: 'Authorization', value: "Bearer ${Test-pipeline-Sonar}"]],
-        url: "https://sonarqube.colanapps.in/"
-    )
-                    def json = readJSON text: response.content
-                    def status = json.projectStatus.status
+        url: "https://sonarqube.colanapps.in/")
+                    def qc = readJSON text: response.content
+                    def stat = qc.projectStatus.status
                     
-                    if (status == 'OK') {
-                        echo "Quality gate passed: ${json.projectStatus.status}"
+                    if (stat == 'OK') {
+                        echo "Quality gate passed: ${stat}"
                     } else {
-                        error "Quality gate failed: ${json.projectStatus.status}"
+                        error "Quality gate failed: ${stat}"
                     }
                 }
             }
