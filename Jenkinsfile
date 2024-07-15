@@ -13,7 +13,7 @@ pipeline {
             steps {
             timeout(time: 10, unit: 'MINUTES') {
                def qg = waitForQualityGate()
-                if (qg.status !='OK'){
+                if (qg.status != 'OK'){
                         echo "Quality gate failed: ${qg.status}" }
                             
             }
