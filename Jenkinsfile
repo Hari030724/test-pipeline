@@ -9,17 +9,17 @@ pipeline {
               }
             }
           }
-          /*stage("Quality Gate") {
+          stage("Quality Gate") {
             steps {
-            timeout(time: 1, unit: 'MINUTES') {
-               
-                withSonarQubeEnv('colan-sonarqube-server') {
-                    sh 'https://sonarqube.colanapps.in/bin/mvn sonar:sonar -Dsonar.projectKey=${test-pipeline} -Dsonar.projectName='${test-pipeline}' -Dsonar.host.url=${https://sonarqube.colanapps.in}'
+            timeout(time: 10, unit: 'MINUTES') {
+               def qg = waitForQualityGate()
+                if (qg.status !='OK'){
+                        echo "Quality gate failed: ${qg.status}" }
                             
             }
           }
      
         }
-        }*/
-      }
         }
+      }
+        
