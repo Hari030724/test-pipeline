@@ -12,14 +12,16 @@ pipeline {
           stage("Quality Gate") {
             steps {
             timeout(time: 1, unit: 'MINUTES') {
-               while (taskStatus in ['PENDING', 'IN_PROGRESS']) {
-    sleep 30  // Adjust sleep duration as needed
-    taskStatus = checkSonarQubeTaskStatus('84c86771-8e67-450b-b841-48f9c31b1c9a')
+             waitForQualityGate abortPipeline: true
               }
             }
           }
-        
+      stage('Deploy') {
+            steps {
+                sh 'kubectl apply -f deployment.yaml'
+            }
+        }        
         }
  
       }
-}
+
