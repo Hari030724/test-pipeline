@@ -42,7 +42,7 @@ stages {
         acceptType: 'APPLICATION_JSON',
         contentType: 'APPLICATION_JSON',
         customHeaders: [[name: 'Authorization', value: "Bearer ${colan-sonaqube-server-global-access-token}"]],
-        url: https://sonarqube.colanapps.in/
+        url: "https://sonarqube.colanapps.in/"
     )
                     def json = readJSON text: response.content
                     def status = json.projectStatus.status
