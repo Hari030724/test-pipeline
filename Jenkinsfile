@@ -21,10 +21,10 @@ stages {
       SCANNER_HOME = tool 'Sonar-scanner'
     }
     steps {
-    withSonarQubeEnv(credentialsId: 'colan-sonaqube-server-global-access-token', installationName: 'colan-sonarqube-server') {
+    withSonarQubeEnv(credentialsId: 'colan-sonaqube-server-global-access-token', installationName: 'test-pipeline') {
          sh '''https://sonarqube.colanapps.in/bin/sonar-scanner \
-         -Dsonar.projectKey=projectKey \
-         -Dsonar.projectName=projectName \
+         -Dsonar.projectKey=test-pipeline \
+         -Dsonar.projectName=test-pipeline \
          -Dsonar.sources=src/ \
          -Dsonar.java.binaries=target/classes/ \
          -Dsonar.exclusions=src/test/java/****/*.java \
@@ -41,7 +41,7 @@ stages {
                     def response = httpRequest(
         acceptType: 'APPLICATION_JSON',
         contentType: 'APPLICATION_JSON',
-        customHeaders: [[name: 'Authorization', value: "Bearer ${colan-sonaqube-server-global-access-token}"]],
+        customHeaders: [[name: 'Authorization', value: "Bearer ${Test-pipeline-git}"]],
         url: "https://sonarqube.colanapps.in/"
     )
                     def json = readJSON text: response.content
