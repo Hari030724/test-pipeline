@@ -18,10 +18,10 @@ stages {
       SCANNER_HOME = tool 'Sonar-scanner'
     }
     steps {
-    withSonarQubeEnv(credentialsId: 'Test-pipeline-Sonar', installationName: 'test-pipeline') {
+    withSonarQubeEnv(credentialsId: 'colan-sonaqube-server-global-access-token', installationName: 'Sonar Quality Gate Maven Plugin') {
          sh '''https://sonarqube.colanapps.in/bin/sonar-scanner \
-         -Dsonar.projectKey=test-pipeline \
-         -Dsonar.projectName=test-pipeline \
+         -Dsonar.projectKey=Sonar Quality Gate Maven Plugin \
+         -Dsonar.projectName=Sonar Quality Gate Maven Plugin \
          -Dsonar.sources=src/ \
          -Dsonar.java.binaries=target/classes/ \
          -Dsonar.exclusions=src/test/java/****/*.java \
@@ -37,7 +37,7 @@ stages {
                     def response = httpRequest(
         acceptType: 'APPLICATION_JSON',
         contentType: 'APPLICATION_JSON',
-        customHeaders: [[name: 'Authorization', value: "Bearer ${Test-pipeline-Sonar}"]],
+        customHeaders: [[name: 'Authorization', value: "Bearer ${colan-sonaqube-server-global-access-token}"]],
         url: "https://sonarqube.colanapps.in/")
                     def qc = readJSON text: response.content
                     def stat = qc.projectStatus.status
