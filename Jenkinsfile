@@ -11,21 +11,11 @@ pipeline {
           }
           stage("Quality Gate") {
             steps {
-              def qualityGateUrl = "https://sonarqube.colanapps.in/api/qualitygates/project_status"
-                def response = httpRequest(
-                        acceptType: 'APPLICATION_JSON',
-                        contentType: 'APPLICATION_JSON',
-                        customHeaders: [[name: 'Authorization', value: "Bearer ${colan-sonaqube-server-global-access-token}"]],
-                        url: "${qualityGateUrl}?projectKey=${sqa_2de1ed443d10f46e6507693733fc93a39648a212}")
-        
-                    def json = readJSON text: response.content
-                    def status = json.projectStatus.status
-                    
-                    if (status == 'OK') {
-                        echo "Quality gate passed: ${json.projectStatus.status}"
-                    } else {
-                        error "Quality gate failed: ${json.projectStatus.status}"
-                    }
+            timeout(time: 10, unit: 'MINUTES') {
+              def qg = waitForQualityGate()
+              if (qg.status != 'OK') {
+                  error "Pipeline aborted due to quality gate failure: ${qg.status}"
+              }
             }
           }
         }
