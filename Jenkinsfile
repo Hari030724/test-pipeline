@@ -33,12 +33,27 @@ stages {
        }
      }
 }
-   stage('SQuality Gate') {
-     steps {
-       timeout(time: 1, unit: 'MINUTES') {
-       waitForQualityGate abortPipeline: true
-       }
-  }
-}
+        stage('Check Quality Gate') {
+            steps {
+                script {
+                    def qualityGateUrl = "https://sonarqube.colanapps.in/api/qualitygates/project_status"
+                    
+                    def response = httpRequest(
+        acceptType: 'APPLICATION_JSON',
+        contentType: 'APPLICATION_JSON',
+        customHeaders: [[name: 'Authorization', value: "Bearer ${colan-sonaqube-server-global-access-token}"]],
+        url: https://sonarqube.colanapps.in/
+    )
+                    def json = readJSON text: response.content
+                    def status = json.projectStatus.status
+                    
+                    if (status == 'OK') {
+                        echo "Quality gate passed: ${json.projectStatus.status}"
+                    } else {
+                        error "Quality gate failed: ${json.projectStatus.status}"
+                    }
+                }
+            }
+        }
 }
 }
