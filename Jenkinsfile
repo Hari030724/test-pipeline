@@ -13,7 +13,7 @@ pipeline {
             steps {
             script {
            try {
-                        withEnv(["PATH+MAVEN=${tool 'maven'}/bin"]) {
+                        withEnv(["PATH+MAVEN=${tool 'Maven'}/bin"]) {
                             sh 'mvn sonar:sonar -Dsonar.analysis.mode=publish'
                         }
                     } catch (Exception e) {
