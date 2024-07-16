@@ -26,7 +26,7 @@ pipeline {
             steps {
                 script {
                     def result = httpRequest "http://sonarqube.colanapps.in/api/qualitygates/project_status?projectKey=${SONARQUBE_PROJECT_KEY}"
-	
+	         sh "curl -X GET ${result}"
 		def object = readJSON text: result.content
 		def status = result.status
 		echo "Quality Gate state: ${status}"
