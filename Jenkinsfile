@@ -22,7 +22,7 @@ pipeline {
             }
         }
         
-      /*  stage('Check Quality Gate') {
+      stage('Check Quality Gate') {
             steps {
                 script {
                     def result = httpRequest "http://sonarqube.colanapps.in/api/qualitygates/project_status?projectKey=${SONARQUBE_PROJECT_KEY}"
@@ -40,7 +40,7 @@ pipeline {
 		}
                     } 
                 }
-            }*/
+            }
         }
     
 
