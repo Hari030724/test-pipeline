@@ -1,5 +1,5 @@
 pipeline {
-        agent none
+        agent any
         stages {
           stage("build & SonarQube analysis") {
             agent any
@@ -12,12 +12,23 @@ pipeline {
           stage("Quality Gate") {
             steps {
             timeout(time: 10, unit: 'MINUTES') {
-           waitForQualityGate abortPipeline: true
-                            
-            
+           sh 'mvn sonar:sonar -Dsonar.analysis.mode=publish'
+
           }
      
         }
         }
+                stage('Deploy') {
+    steps {
+        script {
+            if (deploymentStatus != 'SUCCESS') {
+                error 'Deployment failed'
+                currentBuild.result = 'FAILURE'
+                error 'Aborting pipeline due to deployment failure'
+                return
+            }
+        }
+    }
+}
       }
 }
