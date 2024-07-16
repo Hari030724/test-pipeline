@@ -12,9 +12,15 @@ pipeline {
           stage("Quality Gate") {
             steps {
             script {
-           sh 'mvn sonar:sonar -Dsonar.analysis.mode=publish'
-
-          }
+           try {
+                        withEnv(["PATH+MAVEN=${tool 'maven'}/bin"]) {
+                            sh 'mvn sonar:sonar -Dsonar.analysis.mode=publish'
+                        }
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        echo "Error: ${e.message}"
+                        throw e
+                    }          }
      
         }
         }
