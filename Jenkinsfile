@@ -23,7 +23,7 @@ pipeline {
             steps {
                 sh "Maven/bin/mvn test"
             }
-        }*/
+        }
         
         stage('SonarQube Analysis') {
             steps {
@@ -31,7 +31,7 @@ pipeline {
                     sh "/var/lib/jenkins/workspace/Pipelinetest/target/sonar"
                 }
             }
-        }
+        }*/
         
         stage('Check Quality Gate') {
             steps {
