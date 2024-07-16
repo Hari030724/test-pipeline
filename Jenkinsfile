@@ -11,7 +11,7 @@ pipeline {
 
     stages {
         
-        stage('Build') {
+        stage('Build & Analysis') {
             steps {
                 withSonarQubeEnv('colan-sonarqube-server') {
                 sh 'mvn clean package sonar:sonar'
@@ -19,19 +19,11 @@ pipeline {
             }
         }
         
-        /*stage('Test') {
+        stage('Test') {
             steps {
-                sh "Maven/bin/mvn test"
+                sh "mvn test"
             }
         }
-        
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('colan-sonarqube-server') {
-                    sh "/var/lib/jenkins/workspace/Pipelinetest/target/sonar"
-                }
-            }
-        }*/
         
         stage('Check Quality Gate') {
             steps {
