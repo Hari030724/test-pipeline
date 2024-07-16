@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         //MAVEN_HOME = tool name: 'Maven', type: 'maven'
-        SONARQUBE_SCANNER_HOME = tool name: 'Sonar-Scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+        //SONARQUBE_SCANNER_HOME = tool name: 'colan-sonarqube-server', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
         SONARQUBE_API_TOKEN = credentials('colan-sonaqube-server-global-access-token') 
         SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in' 
         SONARQUBE_PROJECT_KEY = 'sonar-quality-gate-maven-plugin' 
@@ -28,7 +28,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube Server') {
-                    sh "${SONARQUBE_SCANNER_HOME}/bin/sonar-scanner"
+                    sh "colan-sonarqube-server/bin/sonar-scanner"
                 }
             }
         }
