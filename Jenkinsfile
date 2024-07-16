@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        MAVEN_HOME = tool name: 'Maven', type: 'maven'
+        //MAVEN_HOME = tool name: 'Maven', type: 'maven'
         SONARQUBE_SCANNER_HOME = tool name: 'Sonar-Scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
         SONARQUBE_API_TOKEN = credentials('colan-sonaqube-server-global-access-token') 
         SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in' 
