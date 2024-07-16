@@ -8,7 +8,6 @@ pipeline {
     }
 
     stages {
-        agent any
         stage('Build & Analysis') {
             steps {
                 withSonarQubeEnv('colan-sonarqube-server') {
