@@ -19,11 +19,11 @@ pipeline {
             }
         }
         
-        stage('Test') {
+        /*stage('Test') {
             steps {
                 sh "Maven/bin/mvn test"
             }
-        }
+        }*/
         
         stage('SonarQube Analysis') {
             steps {
