@@ -21,7 +21,7 @@ pipeline {
         
         stage('Test') {
             steps {
-                sh "${MAVEN_HOME}/bin/mvn test"
+                sh "Maven/bin/mvn test"
             }
         }
         
