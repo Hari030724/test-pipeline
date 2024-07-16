@@ -1,41 +1,68 @@
 pipeline {
-        agent any
-        stages {
-          stage("build & SonarQube analysis") {
-            agent any
+    agent any
+
+    environment {
+        MAVEN_HOME = tool name: 'Maven', type: 'maven'
+        SONARQUBE_SCANNER_HOME = tool name: 'Sonar-Scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+        SONARQUBE_API_TOKEN = credentials('colan-sonaqube-server-global-access-token') 
+        SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in' 
+        SONARQUBE_PROJECT_KEY = 'sonar-quality-gate-maven-plugin' 
+    }
+
+    stages {
+        
+        stage('Build') {
             steps {
-              withSonarQubeEnv('colan-sonarqube-server') {
+                withSonarQubeEnv('colan-sonarqube-server') {
                 sh 'mvn clean package sonar:sonar'
               }
             }
-          }
-          stage("Quality Gate") {
+        }
+        
+        stage('Test') {
             steps {
-            script {
-           try {
-                        withEnv(["PATH+MAVEN=${tool 'Maven'}/bin"]) {
-                            sh 'mvn sonar:sonar -Dsonar.analysis.mode=publish'
-                        }
-                    } catch (Exception e) {
-                        currentBuild.result = 'FAILURE'
-                        echo "Error: ${e.message}"
-                        throw e
-                    }          }
-     
+                sh "${MAVEN_HOME}/bin/mvn test"
+            }
         }
+        
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube Server') {
+                    sh "${SONARQUBE_SCANNER_HOME}/bin/sonar-scanner"
+                }
+            }
         }
-                stage('Deploy') {
-    steps {
-        script {
-            if (deploymentStatus != 'SUCCESS') {
-                error 'Deployment failed'
-                currentBuild.result = 'FAILURE'
-                error 'Aborting pipeline due to deployment failure'
-                return
+        
+        stage('Check Quality Gate') {
+            steps {
+                script {
+                    def qualityGateUrl = "${SONARQUBE_SERVER_URL}/api/qualitygates/project_status"
+                    def response = httpRequest(
+                        acceptType: 'APPLICATION_JSON',
+                        contentType: 'APPLICATION_JSON',
+                        customHeaders: [[name: 'Authorization', value: "Bearer ${SONARQUBE_API_TOKEN}"]],
+                        url: "${qualityGateUrl}?projectKey=${SONARQUBE_PROJECT_KEY}"
+                    )
+                    
+                    def json = readJSON text: response.content
+                    def status = json.projectStatus.status
+                    
+                    if (status == 'OK') {
+                        echo "Quality gate passed: ${json.projectStatus.status}"
+                    } else {
+                        error "Quality gate failed: ${json.projectStatus.status}"
+                    }
+                }
             }
         }
     }
-}
-      
-}
+
+    post {
+        success {
+            echo 'Pipeline successful!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
 }
