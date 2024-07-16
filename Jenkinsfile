@@ -28,7 +28,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('colan-sonarqube-server') {
-                    sh "http://sonarqube.colanapps.in/bin/sonar-scanner"
+                    sh "/var/lib/jenkins/workspace/Pipelinetest/target/sonar"
                 }
             }
         }
