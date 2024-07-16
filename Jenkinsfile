@@ -2,8 +2,6 @@ pipeline {
     agent any
 
     environment {
-        //MAVEN_HOME = tool name: 'Maven', type: 'maven'
-        //SONARQUBE_SCANNER_HOME = tool name: 'colan-sonarqube-server', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
         SONARQUBE_API_TOKEN = credentials('colan-sonaqube-server-global-access-token') 
         SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in' 
         SONARQUBE_PROJECT_KEY = 'sonar-quality-gate-maven-plugin' 
@@ -28,33 +26,30 @@ pipeline {
         stage('Check Quality Gate') {
             steps {
                 script {
-                    def qualityGateUrl = "${SONARQUBE_SERVER_URL}/api/qualitygates/project_status"
+                    def qualityGateUrl = "${SONARQUBE_SERVER_URL}/api/qualitygates/project_status?projectKey=${SONARQUBE_PROJECT_KEY}"
                     def response = httpRequest(
                         acceptType: 'APPLICATION_JSON',
                         contentType: 'APPLICATION_JSON',
                         customHeaders: [[name: 'Authorization', value: "Bearer ${SONARQUBE_API_TOKEN}"]],
-                        url: "${qualityGateUrl}?projectKey=${SONARQUBE_PROJECT_KEY}"
+                        url: "${qualityGateUrl}"
                     )
                     
-                    def json = readJSON text: response.content
-                    def status = json.projectStatus.status
+                    def qualityGateStatus = readJSON text: response.content
+                    def status = qualityGateStatus.projectStatus.status
                     
-                    if (status == 'OK') {
-                        echo "Quality gate passed: ${json.projectStatus.status}"
-                    } else {
-                        error "Quality gate failed: ${json.projectStatus.status}"
-                    }
+                    if (status == 'ERROR' || status == 'WARN') {
+                                 currentBuild.result = 'FAILURE'
+                        error "SonarQube quality gate failed: ${qualityGateStatus.projectStatus.conditions}"
+                    } 
                 }
             }
         }
     }
 
     post {
-        success {
-            echo 'Pipeline successful!'
+       always {
+            echo "Pipeline finished with status: ${currentBuild.result}"
         }
-        failure {
-            echo 'Pipeline failed!'
-        }
+        
     }
 }
