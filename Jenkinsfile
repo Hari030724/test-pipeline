@@ -27,7 +27,7 @@ pipeline {
 		timeout(time: 5, unit: 'MINUTES') {
 		
 				try {
-					result = httpRequest "http://sonarqube.colanapps.in/api/project_analyses/search?project=sonar-quality-gate-maven-plugin:${env.BRANCH_NAME}"
+					def result = httpRequest "http://sonarqube.colanapps.in/api/project_analyses/search?project=sonar-quality-gate-maven-plugin:${env.master}"
 					def analyses = readJSON text: result.content
 					analysisId = analyses.analyses[0].key
 					
