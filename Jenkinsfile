@@ -23,6 +23,7 @@ pipeline {
         }
         
  stage("Quality Gate"){
+	 steps {
 		timeout(time: 5, unit: 'MINUTES') {
 		
 				try {
@@ -75,5 +76,5 @@ pipeline {
             echo "Pipeline finished with status: ${object.projectStatus.status}"
         }
     }
-
+    }
 }
