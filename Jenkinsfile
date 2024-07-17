@@ -25,28 +25,26 @@ pipeline {
       stage('Check Quality Gate') {
             steps {
                 script {
-                    def result = httpRequest "http://sonarqube.colanapps.in/api/qualitygates/project_status?projectKey=${SONARQUBE_PROJECT_KEY}"
-	         sh "curl -X GET ${result}"
-		def object = readJSON text: result.content
-		def status = result.status
-		echo "Quality Gate state: ${status}"
-
-		if (object.projectStatus.status == "NONE") {
-			error 'No Quality Gate defined'
-		} else if (object.projectStatus.status != "OK") {
-			error "Pipeline aborted due to quality gate failure: ${object.projectStatus.status}"
-		} else {
-			echo "Quality Gate passed (${object.projectStatus.status})"
-		}
+                  def qg = waitForQualityGate()
+                    if (qg.status == 'OK') {
+                        currentBuild.result = 'SUCCESS'
+                        env.project_status = 'Passed'
+                    } else {
+                        currentBuild.result = 'FAILURE'
+                        env.project_status = 'Failed'
+		        currentBuild.abort('Aborting pipeline as Quality Gate has failed!')
+                    }
                     } 
                 }
             }
         }
+}
     
 
     post {
        always {
             echo "Pipeline finished with status: ${currentBuild.result}"
+	       
         }
     }
 }
