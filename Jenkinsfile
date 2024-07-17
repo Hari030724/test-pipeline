@@ -29,7 +29,6 @@ pipeline {
 		def result = httpRequest "http://sonarqube.colanapps.in/api/qualitygates/project_status?projectKey=${SONARQUBE_PROJECT_KEY}"
 	
 		def object = readJSON text: result.content
-		def status = result.status
 
 		echo "Quality Gate state: ${status}"
 
