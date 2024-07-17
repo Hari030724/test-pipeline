@@ -26,35 +26,7 @@ pipeline {
 	 steps {
 		timeout(time: 5, unit: 'MINUTES') {
 		
-				try {
-					def result = httpRequest "http://sonarqube.colanapps.in/api/project_analyses/search?project=sonar-quality-gate-maven-plugin:${env.master}"
-					def analyses = readJSON text: result.content
-					analysisId = analyses.analyses[0].key
-					
-					for (event in analyses.analyses[0].events) {
-						if (event.category == "VERSION") {
-							eventName = event.name
-							break
-						}
-					}
-					
-					echo "AnalysisId: ${analysisId}"
-					echo "EventName: ${eventName}"
-					echo "Looking for: ${version}"
-					
-					if (eventName == "${version}") {
-						return true
-					} else {
-						return false
-					}
-				} catch (NullPointerException e) {
-					print "No analysis yet"
-					return false
-				}
-			
-		}		
-     
-		result = httpRequest "http://<sonarqube-instance>/api/qualitygates/project_status?analysisId=${analysisId}"
+		def result = httpRequest "http://sonarqube.colanapps.in/api/qualitygates/project_status?projectKey=${SONARQUBE_PROJECT_KEY}"
 	
 		def object = readJSON text: result.content
 		def status = result.status
@@ -62,7 +34,7 @@ pipeline {
 		echo "Quality Gate state: ${status}"
 
 		if (object.projectStatus.status == "NONE") {
-			error "No Quality Gate defined for ${env.BRANCH_NAME}"
+			error "No Quality Gate defined"
 		} else if (object.projectStatus.status != "OK") {
 			error "Pipeline aborted due to quality gate failure: ${object.projectStatus.status}"
 		} else {
@@ -70,7 +42,7 @@ pipeline {
 		}
     }
     }
-    
+ }
     post {
        always {
             echo "Pipeline finished with status: ${object.projectStatus.status}"
