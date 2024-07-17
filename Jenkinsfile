@@ -24,7 +24,7 @@ pipeline {
         
  stage("Quality Gate"){
 		timeout(time: 5, unit: 'MINUTES') {
-			waitUntil {
+		
 				try {
 					result = httpRequest "http://sonarqube.colanapps.in/api/project_analyses/search?project=sonar-quality-gate-maven-plugin:${env.BRANCH_NAME}"
 					def analyses = readJSON text: result.content
@@ -50,7 +50,7 @@ pipeline {
 					print "No analysis yet"
 					return false
 				}
-			} 
+			
 		}		
      
 		result = httpRequest "http://<sonarqube-instance>/api/qualitygates/project_status?analysisId=${analysisId}"
