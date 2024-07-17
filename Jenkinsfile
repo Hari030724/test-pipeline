@@ -26,26 +26,25 @@ pipeline {
 	 steps {
 		timeout(time: 5, unit: 'MINUTES') {
 		
-		def result = httpRequest "http://sonarqube.colanapps.in/api/qualitygates/project_status?projectKey=${SONARQUBE_PROJECT_KEY}"
-	
-		def object = readJSON text: result.content
-
-		echo "Quality Gate state: ${status}"
-
-		if (object.projectStatus.status == "NONE") {
-			error "No Quality Gate defined"
-		} else if (object.projectStatus.status != "OK") {
-			error "Pipeline aborted due to quality gate failure: ${object.projectStatus.status}"
-		} else {
-			echo "Quality Gate passed (${object.projectStatus.status})"
-		}
+def qualityGateUrl = "${SONARQUBE_SERVER_URL}/api/qualitygates/project_status?projectKey=${SONARQUBE_PROJECT_KEY}"
+def response = httpRequest(acceptType: 'APPLICATION_JSON',contentType: 'APPLICATION_JSON',
+customHeaders: [[name: 'Authorization', value: "Bearer ${SONARQUBE_API_TOKEN}"]],
+url: "${qualityGateUrl}")
+                    
+def qualityGateStatus = readJSON text: response.content
+def status = qualityGateStatus.projectStatus.status
+                    
+if (status == 'ERROR' || status == 'WARN') {
+currentBuild.result = 'FAILURE'
+error "SonarQube quality gate failed: ${qualityGateStatus.projectStatus.conditions}"
     }
     }
  }
+ }
+    }
     post {
        always {
-            echo "Pipeline finished with status: ${object.projectStatus.status}"
+            echo "Pipeline finished with status: ${status}"
         }
     }
     }
-}
