@@ -25,12 +25,7 @@ pipeline {
       stage('Check Quality Gate') {
             steps {
                 script {
-                     writeFile file: 'src/main/java/com/example/BuggyClass.java', text:
-            
-                    public class BuggyClass {
-                        public void buggyMethod() {
-                            String password = "password"; 
-                            System.out.println(password); }
+                     
                   def qg = waitForQualityGate abortPipeline: false, credentialsId: 'colan-sonaqube-server-global-access-token'
                     if (qg.status != 'OK') {
                         error "Pipeline aborted due to quality gate failure: ${qg.status}"
@@ -41,10 +36,21 @@ pipeline {
             }
         }
     }
-    }
+    
     post {
        always {
             echo "Pipeline finished with status: ${currentBuild.result}"
+           echo "Pipeline finished with status: ${currentBuild.result}"
+           echo "Pipeline finished with status: ${currentBuild.result}"
+           echo "Pipeline finished with status: ${currentBuild.result}"
+           echo "Pipeline finished with status: ${currentBuild.result}"
+           echo "Pipeline finished with status: ${currentBuild.result}"
+           echo "Pipeline finished with status: ${currentBuild.result}"
+           echo "Pipeline finished with status: ${currentBuild.result}"
+           echo "Pipeline finished with status: ${currentBuild.result}"
+           echo "Pipeline finished with status: ${currentBuild.result}"
+           echo "Pipeline finished with status: ${currentBuild.result}"
+           echo "Pipeline finished with status: ${currentBuild.result}"
         }
     }
 
