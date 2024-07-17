@@ -24,8 +24,6 @@ pipeline {
         
  stage("Quality Gate"){
 	 steps {
-		timeout(time: 5, unit: 'MINUTES') {
-		
 def qualityGateUrl = "${SONARQUBE_SERVER_URL}/api/qualitygates/project_status?projectKey=${SONARQUBE_PROJECT_KEY}"
 def response = httpRequest(acceptType: 'APPLICATION_JSON',contentType: 'APPLICATION_JSON',
 customHeaders: [[name: 'Authorization', value: "Bearer ${SONARQUBE_API_TOKEN}"]],
@@ -39,7 +37,6 @@ currentBuild.result = 'FAILURE'
 error "SonarQube quality gate failed: ${qualityGateStatus.projectStatus.conditions}"
     }
     }
- }
  }
     }
     post {
