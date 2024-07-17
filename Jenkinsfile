@@ -25,19 +25,11 @@ pipeline {
       stage('Check Quality Gate') {
             steps {
                 script {
-                  def qualityGateUrl = "${SONARQUBE_SERVER_URL}/api/qualitygates/project_status?projectKey=${SONARQUBE_PROJECT_KEY}"
-			def response = httpRequest(acceptType: 'APPLICATION_JSON',contentType: 'APPLICATION_JSON',
-                         customHeaders: [[name: 'Authorization', value: "Bearer ${SONARQUBE_API_TOKEN}"]],url: "${qualityGateUrl}")
-			def qualityGateStatus = readJSON text: response.content
-                        def status = qualityGateStatus.projectStatus.status
-                    if (status == 'ERROR' || status == 'WARN') {
-			currentBuild.result = 'FAILURE'
-                        env.project_status = 'Failed'
-		        currentBuild.abort('Aborting operation as Quality Gate has failed!')
+                  def qg = waitForQualityGate()
+                    if (qg.status != 'OK') {
+                        error "Pipeline aborted due to quality gate failure: ${qg.status}"
                     } else {
-                        currentBuild.result = 'SUCCESS'
-                        env.project_status = 'Passed'
-                    }
+                        echo "Quality gate passed: ${qg.status}"
                     } 
                 }
             }
@@ -48,4 +40,5 @@ pipeline {
             echo "Pipeline finished with status: ${currentBuild.result}"
         }
     }
+}
 }
