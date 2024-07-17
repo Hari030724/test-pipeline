@@ -25,7 +25,13 @@ pipeline {
       stage('Check Quality Gate') {
             steps {
                 script {
-                     
+                     sh ''' public class SecurityHotspot {
+                        public void insecureMethod() {
+                            String username = "admin";
+                            String password = "password";
+                            System.out.println("Credentials: " + username + "/" + password);
+                        }
+                    }'''
                   def qg = waitForQualityGate abortPipeline: false, credentialsId: 'colan-sonaqube-server-global-access-token'
                     if (qg.status != 'OK') {
                         error "Pipeline aborted due to quality gate failure: ${qg.status}"
