@@ -24,6 +24,7 @@ pipeline {
         
  stage("Quality Gate"){
 	 steps {
+		 script {
 def qualityGateUrl = "${SONARQUBE_SERVER_URL}/api/qualitygates/project_status?projectKey=${SONARQUBE_PROJECT_KEY}"
 def response = httpRequest(acceptType: 'APPLICATION_JSON',contentType: 'APPLICATION_JSON',
 customHeaders: [[name: 'Authorization', value: "Bearer ${SONARQUBE_API_TOKEN}"]],
@@ -34,9 +35,10 @@ def status = qualityGateStatus.projectStatus.status
                     
 if (status == 'ERROR' || status == 'WARN') {
 currentBuild.result = 'FAILURE'
-error "SonarQube quality gate failed: ${qualityGateStatus.projectStatus.conditions}"
+error "SonarQube quality gate failed: ${status}"
     }
     }
+	 }
  }
     }
     post {
