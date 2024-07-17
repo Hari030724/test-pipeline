@@ -25,7 +25,8 @@ pipeline {
       stage('Check Quality Gate') {
             steps {
                 script {
-                  def qg = waitForQualityGate()
+                  def qg = curl -v -X GET 'https://sonarqube.colanapps.in/api/qualitygates/project_status' \
+     -d 'projectKey=io.github.r0bb3n:sonar-quality-gate-maven-plugin'
                     if (qg.status == 'OK') {
                         currentBuild.result = 'SUCCESS'
                         env.project_status = 'Passed'
@@ -38,8 +39,6 @@ pipeline {
                 }
             }
         }
-
-    
 
     post {
        always {
