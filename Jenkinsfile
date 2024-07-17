@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         SONARQUBE_API_TOKEN = credentials('colan-sonaqube-server-global-access-token') 
-        SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in' 
+        SONARQUBE_SERVER_URL = 'https://sonarqube.colanapps.in/dashboard?id=io.github.r0bb3n%3Asonar-quality-gate-maven-plugin' 
         SONARQUBE_PROJECT_KEY = 'io.github.r0bb3n:sonar-quality-gate-maven-plugin' 
     }
 
