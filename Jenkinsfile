@@ -25,6 +25,7 @@ pipeline {
       stage('Check Quality Gate') {
             steps {
                 script {
+                    <html>hhhh</html>
                   def qg = waitForQualityGate abortPipeline: false, credentialsId: 'colan-sonaqube-server-global-access-token'
                     if (qg.status != 'OK') {
                         error "Pipeline aborted due to quality gate failure: ${qg.status}"
