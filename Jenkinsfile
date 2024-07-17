@@ -25,7 +25,7 @@ pipeline {
       stage('Check Quality Gate') {
             steps {
                 script {
-                  def qg = sh "curl -X POST {'https://sonarqube.colanapps.in/api/qualitygates/project_status?projectKey=io.github.r0bb3n:sonar-quality-gate-maven-plugin'}"
+                  def qg = sh "curl -X POST {'https://sonarqube.colanapps.in/api/qualitygates/project_status/?projectKey=io.github.r0bb3n:sonar-quality-gate-maven-plugin'}"
                     if (qg.status == 'ERROR' || qg.status == 'WARN') {
 			currentBuild.result = 'FAILURE'
                         env.project_status = 'Failed'
