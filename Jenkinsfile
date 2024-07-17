@@ -29,8 +29,8 @@ pipeline {
 			def response = httpRequest(acceptType: 'APPLICATION_JSON',contentType: 'APPLICATION_JSON',
                          customHeaders: [[name: 'Authorization', value: "Bearer ${SONARQUBE_API_TOKEN}"]],url: "${qualityGateUrl}")
 			def qualityGateStatus = readJSON text: response.content
-                        def qg.status = qualityGateStatus.projectStatus.status
-                    if (qg.status == 'ERROR' || qg.status == 'WARN') {
+                        def status = qualityGateStatus.projectStatus.status
+                    if (status == 'ERROR' || status == 'WARN') {
 			currentBuild.result = 'FAILURE'
                         env.project_status = 'Failed'
 		        currentBuild.abort('Aborting operation as Quality Gate has failed!')
