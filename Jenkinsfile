@@ -1,42 +1,41 @@
 pipeline {
-    agent any
-    environment {
-        SONARQUBE_API_TOKEN = credentials('colan-sonaqube-server-global-access-token') 
-        SONARQUBE_SERVER_URL = 'https://sonarqube.colanapps.in/dashboard?id=io.github.r0bb3n%3Asonar-quality-gate-maven-plugin' 
-        SONARQUBE_PROJECT_KEY = 'io.github.r0bb3n:sonar-quality-gate-maven-plugin' 
-    }
-
-    stages {
-        stage('Build & Analysis') {
+        agent any
+        stages {
+          stage("build & SonarQube analysis") {
+            agent any
             steps {
-                withSonarQubeEnv('colan-sonarqube-server') {
+              withSonarQubeEnv('colan-sonarqube-server') {
                 sh 'mvn clean package sonar:sonar'
               }
             }
-        }
-        
-        stage('Test') {
+          }
+          stage("Quality Gate") {
             steps {
-                sh "mvn test"
+            script {
+           try {
+                        withEnv(["PATH+MAVEN=/usr/bin/mvn"]) {
+                            sh 'mvn sonar:sonar -Dsonar.analysis.mode=publish'
+                        }
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        echo "Error: ${e.message}"
+                        throw e
+                    }          }
+     
+        }
+        }
+                stage('Deploy') {
+    steps {
+        script {
+            if (deploymentStatus != 'SUCCESS') {
+                error 'Deployment failed'
+                currentBuild.result = 'FAILURE'
+                error 'Aborting pipeline due to deployment failure'
+                return
             }
         }
-        
- stage("Quality Gate"){
-	 steps {
-		script {
-                  def qg = waitForQualityGate ()
-                    if (qg.status != 'OK') {
-                        error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                    } else {
-                        echo "Quality gate passed: ${qg.status}"
-                    } 
-                } 
-	 }
- }
     }
-    post {
-       always {
-            echo "Pipeline finished with status: ${status}"
-        }
-    }
-    }
+}
+      
+}
+}
