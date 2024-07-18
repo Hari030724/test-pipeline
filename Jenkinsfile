@@ -1,8 +1,7 @@
 pipeline {
     agent any
-
     environment {
-	    SONAR_HOME = tool 'colan-sonarqube-server'
+	    SCANNER_HOME = tool 'colan-sonarqube-server'
         SONARQUBE_API_TOKEN = credentials('colan-sonaqube-server-global-access-token') 
         SONARQUBE_SERVER_URL = 'https://sonarqube.colanapps.in/dashboard?id=io.github.r0bb3n%3Asonar-quality-gate-maven-plugin' 
         SONARQUBE_PROJECT_KEY = 'io.github.r0bb3n:sonar-quality-gate-maven-plugin' 
@@ -13,7 +12,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('colan-sonarqube-server') {
                 sh 'mvn clean package sonar:sonar'
-		sh ''' $SCANNER_HOME/bin/sonarqube-scanner -Dsonar.projectName=sonar-quality-gate-maven-plugin \
+		sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=sonar-quality-gate-maven-plugin \
                     -Dsonar.java.binaries=. \
                     -Dsonar.projectKey=io.github.r0bb3n:sonar-quality-gate-maven-plugin'''
               }
