@@ -11,9 +11,6 @@ pipeline {
             steps {
                 withSonarQubeEnv('colan-sonarqube-server') {
                 sh 'mvn clean package sonar:sonar'
-		sh ' /sonar/sonar-scanner/bin/sonar-scanner -Dsonar.projectName=sonar-quality-gate-maven-plugin \
-                    -Dsonar.java.binaries=. \
-                    -Dsonar.projectKey=io.github.r0bb3n:sonar-quality-gate-maven-plugin'
               }
             }
         }
