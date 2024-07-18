@@ -1,41 +1,26 @@
 pipeline {
-        agent any
-        stages {
-          stage("build & SonarQube analysis") {
-            agent any
+    agent any
+
+    stages {
+        stage('Build & Analysis') {
             steps {
-              withSonarQubeEnv('colan-sonarqube-server') {
+                withSonarQubeEnv('colan-sonarqube-server') {
                 sh 'mvn clean package sonar:sonar'
               }
             }
-          }
-          stage("Quality Gate") {
+        }
+
+        stage('SonarQube analysis') {
             steps {
-            script {
-           try {
-                        withEnv(["PATH+MAVEN=/usr/bin/mvn"]) {
-                            sh 'mvn sonar:sonar -Dsonar.analysis.mode=publish'
-                        }
-                    } catch (Exception e) {
-                        currentBuild.result = 'FAILURE'
-                        echo "Error: ${e.message}"
-                        throw e
-                    }          }
-     
+                withSonarQubeEnv('colan-sonarqube-server') {
+                    sh "./gradlew sonarqube"
+                }
+            }
         }
-        }
-                stage('Deploy') {
-    steps {
-        script {
-            if (deploymentStatus != 'SUCCESS') {
-                error 'Deployment failed'
-                currentBuild.result = 'FAILURE'
-                error 'Aborting pipeline due to deployment failure'
-                return
+        stage("Quality gate") {
+            steps {
+                waitForQualityGate abortPipeline: true
             }
         }
     }
-}
-      
-}
 }
