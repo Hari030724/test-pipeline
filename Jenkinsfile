@@ -1,39 +1,37 @@
 pipeline {
-agent any
-environment {
-   GIT_COMMIT_SHORT = sh(script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
-     returnStdout: true
-    )
-}
+    agent any
+    environment {
+        SONARQUBE_API_TOKEN = credentials('colan-sonaqube-server-global-access-token') 
+        SONARQUBE_SERVER_URL = 'https://sonarqube.colanapps.in/dashboard?id=io.github.r0bb3n%3Asonar-quality-gate-maven-plugin' 
+        SONARQUBE_PROJECT_KEY = 'io.github.r0bb3n:sonar-quality-gate-maven-plugin' 
+    }
 
-stages {
-  stage('Build project') {
-    steps {
-     withSonarQubeEnv('colan-sonarqube-server') {
+    stages {
+        stage('Build & Analysis') {
+            steps {
+                withSonarQubeEnv('colan-sonarqube-server') {
                 sh 'mvn clean package sonar:sonar'
               }
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                sh "mvn test"
+            }
+        }
+        
+ stage("Quality Gate"){
+	 steps {
+		script {
+           waitForQualityGate abortPipeline: true
+                  
+	 }
+ }
     }
-  }
-  stage('SonarQube analysis') {
-    steps {
-    withSonarQubeEnv(credentialsId: 'colan-sonaqube-server-global-access-token', installationName: 'colan-sonaqube-server') {
-         sh '''/sonar/sonar-scanner/bin \
-         -Dsonar.projectKey=io.github.r0bb3n:sonar-quality-gate-maven-plugin \
-         -Dsonar.projectName=sonar-quality-gate-maven-plugin \
-         -Dsonar.sources=src/ \
-         -Dsonar.java.binaries=target/classes/ \
-         -Dsonar.exclusions=src/test/java/****/*.java \
-         -Dsonar.java.libraries=/var/lib/jenkins/.m2/**/*.jar \
-         -Dsonar.projectVersion=${BUILD_NUMBER}-${GIT_COMMIT_SHORT}'''
-       }
-     }
-}
-   stage('Quality Gate') {
-     steps {
-       timeout(time: 5, unit: 'MINUTES') {
-       waitForQualityGate abortPipeline: true
-       }
-  }
-}
-}
-}
+    post {
+       always {
+            echo "Pipeline finished with status: ${currentBuild.result}"
+        }
+    }
+    }
