@@ -42,6 +42,9 @@ error "SonarQube quality gate failed: ${status}"
     post {
        always {
             echo "Pipeline finished with status: ${status}"
+	            echo "Pipeline finished with status: ${status}"
+	            echo "Pipeline finished with status: ${status}"
+	            echo "Pipeline finished with status: ${status}"
         }
     }
     }
