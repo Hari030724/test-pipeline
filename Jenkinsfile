@@ -2,11 +2,7 @@ pipeline {
     agent any
 	
        stages {
-	       stage('Cleanup Workspace') {
-    steps {
-        deleteDir() 
-    }
-}
+	       
         stage('Build & Analysis') {
             steps {
                 withSonarQubeEnv('colan-sonarqube-server') {
@@ -14,6 +10,11 @@ pipeline {
               }
             }
         }
+	       stage('Cleanup Workspace') {
+    steps {
+        deleteDir() 
+    }
+}
         
         stage('Test') {
             steps {
