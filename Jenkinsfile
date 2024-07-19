@@ -19,7 +19,7 @@ pipeline {
 	 steps {
 		script {
             timeout(time: 1, unit: 'MINUTES') {
-       waitForQualityGate abortPipeline: false
+       waitForQualityGate abortPipeline: true
        }
                   
 	 }
@@ -29,6 +29,8 @@ pipeline {
     post {
        always {
             echo "Pipeline finished with status: ${currentBuild.result}"
+	        echo "Pipeline finished with status: ${currentBuild.result}"
+	        echo "Pipeline finished with status: ${currentBuild.result}"
         }
     }
     }
