@@ -1,5 +1,10 @@
 pipeline {
     agent any
+	stage('Cleanup Workspace') {
+    steps {
+        deleteDir() 
+    }
+}
        stages {
         stage('Build & Analysis') {
             steps {
