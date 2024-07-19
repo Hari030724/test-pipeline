@@ -10,18 +10,17 @@ pipeline {
               }
             }
         }
-	       stage('Cleanup Workspace') {
-    steps {
-        deleteDir() 
-    }
-}
-        
+
         stage('Test') {
             steps {
                 sh "mvn test"
             }
         }
-        
+         stage('Cleanup Workspace') {
+    steps {
+        deleteDir() 
+    }
+}
  stage("Quality Gate"){
 	 steps {
 		script {
