@@ -1,12 +1,6 @@
 pipeline {
     agent any
-    environment {
-        SONARQUBE_API_TOKEN = credentials('colan-sonaqube-server-global-access-token') 
-        SONARQUBE_SERVER_URL = 'https://sonarqube.colanapps.in/dashboard?id=io.github.r0bb3n%3Asonar-quality-gate-maven-plugin' 
-        SONARQUBE_PROJECT_KEY = 'io.github.r0bb3n:sonar-quality-gate-maven-plugin' 
-    }
-
-    stages {
+       stages {
         stage('Build & Analysis') {
             steps {
                 withSonarQubeEnv('colan-sonarqube-server') {
@@ -24,7 +18,7 @@ pipeline {
  stage("Quality Gate"){
 	 steps {
 		script {
-            timeout(time: 5, unit: 'MINUTES') {
+            timeout(time: 1, unit: 'MINUTES') {
        waitForQualityGate abortPipeline: true
        }
                   
