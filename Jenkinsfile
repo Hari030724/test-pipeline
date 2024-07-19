@@ -19,8 +19,8 @@ pipeline {
 	 steps {
 		script {
             timeout(time: 10, unit: 'MINUTES') {
-             def QGate = waitForQualityGate()
-                    if (QGate.status == 'ERROR') {
+             def QG = waitForQualityGate()
+                    if (QG.status == 'ERROR') {
                        abortpipeline true
        }
                   
@@ -31,7 +31,7 @@ pipeline {
        }
     post {
        always {
-            echo "Pipeline finished with status: ${currentBuild.result}"
+            echo "Pipeline finished with status: ${QG.status}"
         }
     }
     }
