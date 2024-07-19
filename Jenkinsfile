@@ -29,8 +29,6 @@ pipeline {
     post {
        always {
             echo "Pipeline finished with status: ${currentBuild.result}"
-	        echo "Pipeline finished with status: ${currentBuild.result}"
-	        echo "Pipeline finished with status: ${currentBuild.result}"
         }
     }
     }
