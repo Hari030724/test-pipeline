@@ -14,6 +14,8 @@ pipeline {
         stage('Test') {
             steps {
                 sh "mvn test"
+		    sh "mvn test"
+		    sh "mvn test"
             }
         }
          stage('Cleanup Workspace') {
