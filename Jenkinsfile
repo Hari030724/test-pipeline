@@ -29,9 +29,4 @@ pipeline {
     }
     }
        }
-    post {
-       always {
-            echo "Pipeline finished with status: ${QG.status}"
-        }
-    }
     }
