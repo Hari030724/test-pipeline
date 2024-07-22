@@ -7,7 +7,6 @@ pipeline {
             steps {
                 withSonarQubeEnv('colan-sonarqube-server') {
                 sh 'mvn clean package sonar:sonar'
-			 sh "./gradlew sonarqube"
               }
             }
         }
