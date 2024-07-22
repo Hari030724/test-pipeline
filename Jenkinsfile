@@ -37,10 +37,5 @@ pipeline {
     }
     }
        }
-	 post {
-        failure {
-            echo "Pipeline failed. Investigate and take necessary actions."
-            currentBuild.result = 'FAILURE'
-        }
-    }
+	
     }
