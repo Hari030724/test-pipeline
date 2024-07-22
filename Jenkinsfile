@@ -7,6 +7,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('colan-sonarqube-server') {
                 sh 'mvn clean package sonar:sonar'
+			 sh "./gradlew sonarqube"
               }
             }
         }
@@ -37,4 +38,10 @@ pipeline {
     }
     }
        }
+	 post {
+        failure {
+            echo "Pipeline failed. Investigate and take necessary actions."
+            currentBuild.result = 'FAILURE'
+        }
+    }
     }
