@@ -36,8 +36,7 @@ pipeline {
 def response = httpRequest(acceptType: 'APPLICATION_JSON',contentType: 'APPLICATION_JSON',
 customHeaders: [[name: 'Authorization', value: "Bearer ${SONARQUBE_API_TOKEN}"]], url: "${qualityGateUrl}")
 
-def jsonSlurper = new JsonSlurper()                    
-def qualityGateStatus = jsonSlurper.parseText(response.content)
+def qualityGateStatus = readJSON text: response.content
 def status = qualityGateStatus.projectStatus.status
                     
 if (status == 'ERROR' || status == 'WARN') {
