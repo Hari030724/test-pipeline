@@ -42,6 +42,7 @@ def status = qualityGateStatus.projectStatus.status
 if (status == 'ERROR' || status == 'WARN') {
 currentBuild.result = 'FAILURE'
 error "SonarQube quality gate failed: ${qualityGateStatus.projectStatus.status}"
+    exit 1
 }
                 }
             }
