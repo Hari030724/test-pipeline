@@ -37,10 +37,11 @@ pipeline {
                     def qualityGateStatus = readJSON text: response.content
                     def status = qualityGateStatus.projectStatus.status
                     
-                    if (status == 'ERROR' || status == 'WARN') {
+                    if (status == 'ERROR' || status == 'WARN' || status != 'OK') {
                                  currentBuild.result = 'FAILURE'
                         echo "SonarQube quality gate failed ${currentBuild.result}"
                     } 
+                   else echo 'SonarQube quality gate passed'
                 }
             }
         }
