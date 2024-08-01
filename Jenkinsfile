@@ -39,7 +39,7 @@ def response = sh(script: "curl -u ${SONARQUBE_API_TOKEN}: ${qualityGateUrl}", r
 
                     //def qualityGateStatus = readJSON text: response.content
 
-                    def status = response.projectStatus.status
+                    def status = response.projectStatus.alert_status
                     if (status != 'OK') {
                         echo 'Quality Gate status Failed'
                     timeout(time: 1, unit: 'MINUTES') {
