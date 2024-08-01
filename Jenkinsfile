@@ -33,17 +33,19 @@ pipeline {
             steps {
                 script {
  
-def response = httpRequest(acceptType: 'APPLICATION_JSON',contentType: 'APPLICATION_JSON',
-customHeaders: [[name: 'Authorization', value: "Bearer ${SONARQUBE_API_TOKEN}"]], url: "${qualityGateUrl}")
+def response = sh(script: "curl -u ${SONARQUBE_API_TOKEN}: ${qualityGateUrl}", returnStdout: true).trim()
 
-def qualityGateStatus = readJSON text: response.content
-def status = qualityGateStatus.projectStatus.status
-                    
-if (status == 'ERROR' || status == 'WARN') {
-currentBuild.result = 'FAILURE'
-error "SonarQube quality gate failed: ${qualityGateStatus.projectStatus.status}"
-    exit 1
-}
+                    echo "Quality Gate Status Response: ${response}"
+
+                    def json = readJSON text: response
+
+                    def qualityGateStatus = json?.projectStatus?.status
+                    if (qualityGateStatus != 'OK') {
+                        error "Quality Gate status is not OK: ${qualityGateStatus}"
+                        exit 1
+                    } else {
+                        echo "Quality Gate status is OK"
+                    }
                 }
             }
         }
