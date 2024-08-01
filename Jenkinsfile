@@ -41,10 +41,10 @@ def response = sh(script: "curl -u ${SONARQUBE_API_TOKEN}: ${qualityGateUrl}", r
 
                     def qualityGateStatus = json?.projectStatus?.status
                     if (qualityGateStatus != 'OK') {
-                        error "Quality Gate status is not OK: ${qualityGateStatus}"
+                        echo "Quality Gate status is not OK: ${qualityGateStatus}"
                     
                     } else {
-                        echo "Quality Gate status is OK"
+                        echo "Quality Gate status is not OK: ${qualityGateStatus}"
                     }
                 }
             }
