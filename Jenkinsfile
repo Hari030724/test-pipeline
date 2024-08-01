@@ -35,7 +35,7 @@ pipeline {
  
 def response = sh(script: "curl -u ${SONARQUBE_API_TOKEN}: ${qualityGateUrl}", returnStdout: true).trim()
 
-                   // echo "Quality Gate Status Response: ${response}"
+                    echo "Quality Gate Status Response: ${response}"
 
                     def json = readJSON text: response
 
