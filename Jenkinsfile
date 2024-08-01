@@ -31,21 +31,18 @@ pipeline {
         
         stage('Check Quality Gate') {
             steps {
-                script {
- 
-def response = sh(script: "curl -u ${SONARQUBE_API_TOKEN}: ${qualityGateUrl}", returnStdout: true) //.trim()
-
-                    //echo "Quality Gate Status Response: ${response.content}"
-
-                    def qualityGateStatus = readJSON text: response
-
-                    //def status = qualityGateStatus.projectStatus.status
-                    if ( qualityGateStatus.projectStatus.status != 'OK') {
-                        echo 'Quality Gate status Failed'
-            
-                    } else {
-                        echo 'Quality Gate status Passed'
-                    }
+               script {
+                    def response = httpRequest(acceptType: 'APPLICATION_JSON',contentType: 'APPLICATION_JSON',
+                        customHeaders: [[name: 'Authorization', value: "Bearer ${SONARQUBE_API_TOKEN}"]],
+                        url: "${qualityGateUrl}")
+                    
+                    def qualityGateStatus = readJSON text: response.content
+                    def status = qualityGateStatus.projectStatus.status
+                    
+                    if (status == 'ERROR' || status == 'WARN') {
+                                 currentBuild.result = 'FAILURE'
+                        error "SonarQube quality gate failed: ${qualityGateStatus.projectStatus.conditions}"
+                    } 
                 }
             }
         }
