@@ -32,9 +32,7 @@ pipeline {
         stage('Check Quality Gate') {
             steps {
                script {
-                    def response = httpRequest(acceptType: 'APPLICATION_JSON',contentType: 'APPLICATION_JSON',
-                        customHeaders: [[name: 'Authorization', value: "Bearer ${SONARQUBE_API_TOKEN}"]],
-                        url: "${qualityGateUrl}")
+                    def response = sh(script: "curl -u ${SONARQUBE_API_TOKEN}: ${qualityGateUrl}", returnStdout: true).trim()
                     
                     def qualityGateStatus = readJSON text: response.content
                     def status = qualityGateStatus.projectStatus.status
