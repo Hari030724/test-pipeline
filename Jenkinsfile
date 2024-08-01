@@ -39,10 +39,10 @@ pipeline {
                     
                     if (status != 'OK') {
             
-                        echo "SonarQube quality gate failed ${status}"
-                        currentBuild.result = 'FAILURE'
+                        echo "SonarQube quality gate status: ${status}"
+                     def  currentBuild.result = 'FAILURE'
                     } 
-                   else echo "SonarQube quality gate passed ${status}"{
+                   else echo "SonarQube quality gate status: ${status}"{
                       currentBuild.result = 'SUCCESS'
                }
                 }
