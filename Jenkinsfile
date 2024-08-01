@@ -40,19 +40,20 @@ pipeline {
                     if (status != 'OK') {
             
                         echo "SonarQube quality gate status: ${status}"
-                       // currentBuild.result = 'FAILURE'
+                        currentBuild.result = 'FAILURE'
                     } 
-                   else echo "SonarQube quality gate status: ${status}"{
-                      //currentBuild.result = 'SUCCESS'
+                   else { 
+                       echo "SonarQube quality gate status: ${status}"
+                      currentBuild.result = 'SUCCESS'
                }
                 }
             }
         }
     }
 
-   /* post {
+    post {
         always {
             echo "Pipeline finished with status: ${currentbuild.result}"
     }
-}*/
+}
 }
