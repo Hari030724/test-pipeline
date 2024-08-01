@@ -18,11 +18,7 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps { 
-                sh "mvn test"
-            }
-        }
+       
          stage('Cleanup Workspace') {
     steps {
         deleteDir() 
@@ -48,6 +44,11 @@ pipeline {
                       currentBuild.result = 'SUCCESS'
                }
                 }
+            }
+        }
+         stage('Test') {
+            steps { 
+                sh "mvn test"
             }
         }
     }
