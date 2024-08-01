@@ -33,14 +33,14 @@ pipeline {
             steps {
                 script {
  
-def response = sh(script: "curl -u ${SONARQUBE_API_TOKEN}: ${qualityGateUrl}", returnStdout: true).trim()
+def response = sh(script: "curl -u ${SONARQUBE_API_TOKEN}: ${qualityGateUrl}", returnStdout: true) //.trim()
 
                     //echo "Quality Gate Status Response: ${response.content}"
 
                     def qualityGateStatus = readJSON text: response
 
                     //def status = qualityGateStatus.projectStatus.status
-                    if ( currentBuild.projectStatus.status != 'OK') {
+                    if ( qualityGateStatus.projectStatus.status != 'OK') {
                         echo 'Quality Gate status Failed'
             
                     } else {
