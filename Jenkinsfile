@@ -52,9 +52,9 @@ pipeline {
         }
           stage('Pipeline Status') {
                 steps {
-                {
+                
             echo "Pipeline finished with status: ${currentBuild.result}"
-    }
+    
 }
     }
                 }
