@@ -17,8 +17,12 @@ pipeline {
               }
             }
         }
+        stage('Test') {
+            steps { 
+                sh "mvn test"
+            }
+        }
 
-       
          stage('Cleanup Workspace') {
     steps {
         deleteDir() 
@@ -46,16 +50,14 @@ pipeline {
                 }
             }
         }
-         stage('Test') {
-            steps { 
-                sh "mvn test"
-            }
-        }
-    }
-
-    post {
-        always {
+          stage('Pipeline Status') {
+                steps {
+                {
             echo "Pipeline finished with status: ${currentBuild.result}"
     }
 }
+    }
+                }
+
+   
 }
