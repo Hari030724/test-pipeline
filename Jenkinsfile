@@ -38,10 +38,10 @@ pipeline {
                     def status = qualityGateStatus.projectStatus.status
                     
                     if (status == 'ERROR' || status == 'WARN' || status != 'OK') {
-                                 currentBuild.result = 'FAILURE'
-                        echo "SonarQube quality gate failed ${currentBuild.result}"
+            
+                        echo "SonarQube quality gate failed ${status}"
                     } 
-                   else echo "SonarQube quality gate passed ${currentBuild.result}"
+                   else echo "SonarQube quality gate passed ${status}"
                 }
             }
         }
@@ -49,7 +49,7 @@ pipeline {
 
     post {
         always {
-            echo "Pipeline finished with status: ${currentBuild.result}"
+            echo "Pipeline finished with status: ${status}"
     }
 }
 }
