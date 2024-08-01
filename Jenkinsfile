@@ -52,13 +52,7 @@ def response = sh(script: "curl -u ${SONARQUBE_API_TOKEN}: ${qualityGateUrl}", r
     }
 
     post {
-        success {
-            echo 'Pipeline successful!'
-            
-        }
-        failure {
-            echo 'Pipeline failed!'
-        
-        }
+        always {
+            echo "Pipeline finished with status: ${currentBuild.result}"
     }
 }
