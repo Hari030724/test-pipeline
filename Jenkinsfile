@@ -53,7 +53,7 @@ pipeline {
 
     post {
         always {
-            echo "Pipeline finished with status: ${currentbuild.result}"
+            echo "Pipeline finished with status: ${currentBuild.result}"
     }
 }
 }
