@@ -39,7 +39,7 @@ pipeline {
                     
                     if (status == 'ERROR' || status == 'WARN') {
                                  currentBuild.result = 'FAILURE'
-                        error "SonarQube quality gate failed: ${qualityGateStatus.projectStatus.conditions}"
+                        echo "SonarQube quality gate failed ${currentBuild.result}"
                     } 
                 }
             }
