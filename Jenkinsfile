@@ -56,3 +56,4 @@ def response = sh(script: "curl -u ${SONARQUBE_API_TOKEN}: ${qualityGateUrl}", r
             echo "Pipeline finished with status: ${currentBuild.result}"
     }
 }
+}
