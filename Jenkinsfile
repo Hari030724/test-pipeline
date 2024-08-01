@@ -41,6 +41,7 @@ pipeline {
             
                         echo "SonarQube quality gate status: ${status}"
                         currentBuild.result = 'FAILURE'
+                        exit 1
                     } 
                    else { 
                        echo "SonarQube quality gate status: ${status}"
