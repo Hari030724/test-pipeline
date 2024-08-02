@@ -32,7 +32,7 @@ pipeline {
         stage('Check Quality Gate') {
             steps {
                script {
-                    def response = sh(script: "curl -u ${qualityGateUrl}", returnStdout: true).trim()
+                    def response = sh(script: "curl -u :${qualityGateUrl}", returnStdout: true).trim()
                     
                     def qualityGateStatus = readJSON text: response
                     def status = qualityGateStatus.projectStatus.status
