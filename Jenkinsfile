@@ -2,17 +2,17 @@ pipeline {
     agent any
 
     environment {
-        qualityGateUrl = 'https://sonarqube.colanapps.in/api/qualitygates/project_status?projectKey=io.github.r0bb3n%3Asonar-quality-gate-maven-plugin&token=sqa_2de1ed443d10f46e6507693733fc93a39648a212'
-        SONARQUBE_API_TOKEN = 'sqa_2de1ed443d10f46e6507693733fc93a39648a212' 
+        qualityGateUrl = 'http://localhost:9000/api/qualitygates/project_status?projectKey=Pipelinetest&token=sqa_df14564ec2c340ce0c698466f20fd8f864e03638'
+        SONARQUBE_API_TOKEN = 'sqa_df14564ec2c340ce0c698466f20fd8f864e03638' 
         SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in' 
-        SONARQUBE_PROJECT_KEY = 'io.github.r0bb3n:sonar-quality-gate-maven-plugin' 
+        SONARQUBE_PROJECT_KEY = 'Pipelinetest' 
     }
 
     stages {
         
         stage('Build & Analysis') {
             steps {
-                withSonarQubeEnv('colan-sonarqube-server') {
+                withSonarQubeEnv('Pipelinetest') {
                 sh 'mvn clean package sonar:sonar'
               }
             }
