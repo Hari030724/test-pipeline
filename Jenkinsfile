@@ -12,9 +12,9 @@ pipeline {
         
         stage('Build & Analysis') {
             steps {
-                withSonarQubeEnv('localhost:9000') {
-                sh 'mvn clean package sonar:sonar'
-              }
+                 environment {
+      SCANNER_HOME = tool 'Sonar-scanner'
+    }
             }
         }
         stage('Test') {
