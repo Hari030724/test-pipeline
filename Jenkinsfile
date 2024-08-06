@@ -29,35 +29,30 @@ pipeline {
         deleteDir() 
     }
 }
+         stage('SonarQube Analysis') {
+            steps {
+                script {
+                 
+                    withSonarQubeEnv(SONARQUBE) {
+                        sh "${SONAR_SCANNER} -Dsonar.projectKey=Pipelinetest -Dsonar.sources=src -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${env.SONARQUBE_API_TOKEN}"
+                    }
+                }
+            }
+        }
         
         stage('Check Quality Gate') {
             steps {
                script {
-                    def response = sh(script: "curl -u ${SONARQUBE_API_TOKEN}: ${qualityGateUrl}", returnStdout: true).trim()
+                 timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
+                }
                     
-                    def qualityGateStatus = readJSON text: response
-                    def status = qualityGateStatus.projectStatus.status
-                    
-                    if (status != 'OK') {
-            
-                        error "SonarQube quality gate status: ${status}"
-                        currentBuild.result = 'FAILURE'
-                        
-                    } 
-                   else { 
-                       echo "SonarQube quality gate status: ${status}"
-                      currentBuild.result = 'SUCCESS'
-               }
+                   
+                  
                 }
             }
         }
-          stage('Pipeline Status') {
-                steps {
-                
-            echo "Pipeline finished with status: ${currentBuild.result}"
-    
-}
-    }
+          
                 }
 
    
