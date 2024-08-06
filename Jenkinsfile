@@ -10,13 +10,13 @@ pipeline {
 
     stages {
         
-        stage('Build & Analysis') {
+     /*   stage('Build & Analysis') {
             steps {
                  environment {
       SCANNER_HOME = tool 'Sonar-scanner'
     }
             }
-            }
+            }*/
         
         stage('Test') {
             steps { 
