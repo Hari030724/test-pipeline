@@ -12,7 +12,7 @@ pipeline {
         
         stage('Build & Analysis') {
             steps {
-                withSonarQubeEnv('Pipelinetest') {
+                withSonarQubeEnv('localhost:9000') {
                 sh 'mvn clean package sonar:sonar'
               }
             }
