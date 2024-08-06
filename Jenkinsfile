@@ -2,22 +2,21 @@ pipeline {
     agent any
 
     environment {
-        qualityGateUrl = 'http://localhost:9000/api/qualitygates/project_status?projectKey=Pipelinetest&token=sqa_df14564ec2c340ce0c698466f20fd8f864e03638'
-        SONARQUBE_API_TOKEN = 'sqa_df14564ec2c340ce0c698466f20fd8f864e03638' 
+        qualityGateUrl = 'https://sonarqube.colanapps.in/api/qualitygates/project_status?projectKey=io.github.r0bb3n%3Asonar-quality-gate-maven-plugin&token=sqa_2de1ed443d10f46e6507693733fc93a39648a212'
+        SONARQUBE_API_TOKEN = 'sqa_2de1ed443d10f46e6507693733fc93a39648a212' 
         SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in' 
-        SONARQUBE_PROJECT_KEY = 'Pipelinetest' 
+        SONARQUBE_PROJECT_KEY = 'io.github.r0bb3n:sonar-quality-gate-maven-plugin' 
     }
 
     stages {
         
-     /*   stage('Build & Analysis') {
+        stage('Build & Analysis') {
             steps {
-                 environment {
-      SCANNER_HOME = tool 'Sonar-scanner'
-    }
+                withSonarQubeEnv('colan-sonarqube-server') {
+                sh 'mvn clean package sonar:sonar'
+              }
             }
-            }*/
-        
+        }
         stage('Test') {
             steps { 
                 sh "mvn test"
@@ -29,30 +28,35 @@ pipeline {
         deleteDir() 
     }
 }
-         stage('SonarQube Analysis') {
-            steps {
-                script {
-                 
-                    withSonarQubeEnv(SONARQUBE) {
-                        sh "${SONAR_SCANNER} -Dsonar.projectKey=Pipelinetest -Dsonar.sources=src -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${env.SONARQUBE_API_TOKEN}"
-                    }
-                }
-            }
-        }
         
         stage('Check Quality Gate') {
             steps {
                script {
-                 timeout(time: 1, unit: 'HOURS') {
-                    waitForQualityGate abortPipeline: true
-                }
+                    def response = sh(script: "curl -u ${SONARQUBE_API_TOKEN}: ${qualityGateUrl}", returnStdout: true).trim()
                     
-                   
-                  
+                    def qualityGateStatus = readJSON text: response
+                    def status = qualityGateStatus.projectStatus.status
+                    
+                    if (status != 'OK') {
+            
+                        error "SonarQube quality gate status: ${status}"
+                        currentBuild.result = 'FAILURE'
+                        
+                    } 
+                   else { 
+                       echo "SonarQube quality gate status: ${status}"
+                      currentBuild.result = 'SUCCESS'
+               }
                 }
             }
         }
-          
+          stage('Pipeline Status') {
+                steps {
+                
+            echo "Pipeline finished with status: ${currentBuild.result}"
+    
+}
+    }
                 }
 
    
