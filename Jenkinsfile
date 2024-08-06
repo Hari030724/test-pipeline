@@ -16,6 +16,7 @@ pipeline {
       SCANNER_HOME = tool 'Sonar-scanner'
     }
             }
+            }
         }
         stage('Test') {
             steps { 
