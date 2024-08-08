@@ -22,6 +22,24 @@ pipeline {
                 sh "mvn test"
             }
         }
+         stage('Install Dependencies') {
+            steps {
+                script {
+                    // Use NodeJS Plugin to set up Node.js
+                    tool name: 'NodeJS', type: 'NodeJS'
+                    sh 'npm install' // Install project dependencies
+                }
+            }
+        }
+
+        stage('Run Tests with Coverage') {
+            steps {
+                script {
+                    // Run Jest tests and collect coverage
+                    sh 'npm test -- --coverage' // Run tests with coverage collection
+                }
+            }
+        }
 
          stage('Cleanup Workspace') {
     steps {
