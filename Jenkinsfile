@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     environment {
-        qualityGateUrl = 'https://sonarqube.colanapps.in/api/qualitygates/project_status?projectKey=io.github.r0bb3n%3Asonar-quality-gate-maven-plugin&token=sqa_2de1ed443d10f46e6507693733fc93a39648a212'
-        SONARQUBE_API_TOKEN = 'sqa_2de1ed443d10f46e6507693733fc93a39648a212' 
-        SONARQUBE_SERVER_URL = 'http://sonarqube.colanapps.in' 
-        SONARQUBE_PROJECT_KEY = 'io.github.r0bb3n:sonar-quality-gate-maven-plugin' 
+        qualityGateUrl = 'http://localhost:9000/api/qualitygates/project_status?projectKey=test-pipeline&token=sqa_ffd7389d92ead64b393a693d2fb47d82f42c64f3'
+        SONARQUBE_API_TOKEN = 'sqa_ffd7389d92ead64b393a693d2fb47d82f42c64f3' 
+        SONARQUBE_SERVER_URL = 'http://localhost:9000' 
+        SONARQUBE_PROJECT_KEY = 'test-pipeline' 
          NODE_VERSION = '20' 
     }
 
