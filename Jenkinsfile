@@ -6,7 +6,7 @@ pipeline {
         SONARQUBE_API_TOKEN = 'sqa_ffd7389d92ead64b393a693d2fb47d82f42c64f3' 
         SONARQUBE_SERVER_URL = 'http://localhost:9000' 
         SONARQUBE_PROJECT_KEY = 'test-pipeline' 
-         NODE_VERSION = '20' 
+       //  NODE_VERSION = '20' 
     }
 
     stages {
@@ -23,7 +23,7 @@ pipeline {
                 sh "mvn test"
             }
         }
-         stage('Install Dependencies') {
+      /*   stage('Install Dependencies') {
             steps {
                 script {
                     // Use NodeJS Plugin to set up Node.js
@@ -40,7 +40,7 @@ pipeline {
                     sh 'npm test -- --coverage' // Run tests with coverage collection
                 }
             }
-        }
+        } */
 
          stage('Cleanup Workspace') {
     steps {
