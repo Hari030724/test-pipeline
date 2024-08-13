@@ -10,8 +10,7 @@ pipeline {
    stage('Build') {
          withSonarQubeEnv('Sonar') {
             mvnHome = tool 'Maven 3.9.8'  
-            mvnCmd = "${mvnHome}/bin/mvn"
-            scannerHome = sh(script: "${mvnCmd} clean package sonar:sonar -Dsonar.host.url=${env.SONARQUBE_SERVER}", returnStatus: true)
+             sh 'mvn clean package sonar:sonar'
         }
 
        }
