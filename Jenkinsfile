@@ -13,7 +13,7 @@ pipeline {
         
         stage('Build & Analysis') {
             steps {
-                withSonarQubeEnv('colan-sonarqube-server') {
+                withSonarQubeEnv('http://localhost:9000') {
                 sh 'mvn clean package sonar:sonar'
               }
             }
