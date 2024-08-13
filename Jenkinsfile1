@@ -9,10 +9,9 @@ pipeline {
     stages {
    stage('Build') {
 steps{
-         withSonarQubeEnv('Sonar') {
-           // mvnHome = tool 'Maven 3.9.8'  
+        
              sh 'mvn clean package sonar:sonar'
-        }
+        
 }
        }
             
