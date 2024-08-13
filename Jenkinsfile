@@ -13,9 +13,9 @@ pipeline {
         
         stage('Build & Analysis') {
             steps {
-                withSonarQubeEnv('http://localhost:9000') {
+              //  withSonarQubeEnv('http://localhost:9000') {
                 sh 'mvn clean package sonar:sonar'
-              }
+             // }
             }
         }
         stage('Test') {
