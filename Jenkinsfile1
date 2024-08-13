@@ -2,18 +2,20 @@ pipeline {
     agent any
 
     environment {
-        SONARQUBE = 'sonarqube'  // This should match the name you gave when configuring SonarQube in Jenkins
+        SONARQUBE = 'Sonar'  // This should match the name you gave when configuring SonarQube in Jenkins
+     SONARQUBE_SERVER ='http://localhost:9000'
     }
 
     stages {
-        
-
-        stage('Build') {
-            steps {
-                sh 'mvn clean install'  // Adjust this based on your build tool (e.g., Gradle, npm)
-            }
+   stage('Build') {
+         withSonarQubeEnv('Sonar') {
+            mvnHome = tool 'Maven 3.9.8'  
+            mvnCmd = "${mvnHome}/bin/mvn"
+            scannerHome = sh(script: "${mvnCmd} clean package sonar:sonar -Dsonar.host.url=${env.SONARQUBE_SERVER}", returnStatus: true)
         }
 
+       }
+            
         stage('SonarQube Analysis') {
             steps {
                 script {
