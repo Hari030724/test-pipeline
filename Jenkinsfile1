@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+
+    environment {
+        SONARQUBE = 'sonarqube'  // This should match the name you gave when configuring SonarQube in Jenkins
+    }
+
+    stages {
+        
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean install'  // Adjust this based on your build tool (e.g., Gradle, npm)
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv(SONARQUBE) {
+                        sh 'mvn sonar:sonar'  // Adjust this based on your SonarQube scanner command
+                    }
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                waitForQualityGate abortPipeline: true
+            }
+        }
+    }
+}
